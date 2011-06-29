@@ -29,7 +29,7 @@ import com.google.protobuf.UnknownFieldSet;
  * 
  */
 public class JsonCodec extends AbstractCodec {
-	
+        private final JsonFactory jsonFactory = new JsonFactory();
 	
 	public JsonCodec(){
 	}
@@ -49,7 +49,7 @@ public class JsonCodec extends AbstractCodec {
 	 */
 	@Override
 	protected Message  readFromStream(Builder builder, Reader reader,ExtensionRegistry extnRegistry)throws IOException {
-		JsonFactory jsonFactory=new JsonFactory();
+
 		JsonParser parser=jsonFactory.createJsonParser(reader);
 		return JacksonJsonReader.parse(builder, parser,extnRegistry,getAllFeaturesSet());
 	}
@@ -68,7 +68,6 @@ public class JsonCodec extends AbstractCodec {
 	 */
 	@Override
 	protected void writeToStream(Message message, Writer writer)throws IOException {
-		JsonFactory jsonFactory = new JsonFactory();
 		JsonGenerator generator = jsonFactory.createJsonGenerator(writer);
 		JacksonJsonWriter.generateJSONFields(message, generator,getAllFeaturesSet());
 		generator.close();

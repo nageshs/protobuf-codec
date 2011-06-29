@@ -1,16 +1,4 @@
 package protobuf.codec.json;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.Map;
-
-import org.apache.commons.codec.binary.Base64;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonToken;
-
-import protobuf.codec.AbstractCodec;
-import protobuf.codec.Codec.Feature;
-import protobuf.codec.ParseException;
-
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
@@ -19,6 +7,16 @@ import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.ExtensionRegistry.ExtensionInfo;
 import com.google.protobuf.Message;
 import com.google.protobuf.Message.Builder;
+import org.apache.commons.codec.binary.Base64;
+import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.JsonToken;
+import protobuf.codec.AbstractCodec;
+import protobuf.codec.Codec.Feature;
+import protobuf.codec.ParseException;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.Map;
 
 /**
  * Jackson json reader
@@ -74,11 +72,19 @@ public class JacksonJsonReader {
 			else{
 				field = descriptor.findFieldByName(fieldName);
 			}
-			if(field==null){
-				throw new ParseException("Field cannot be null, processing fieldName "+fieldName);
-			}
-			parser.nextToken();
-			setFields(builder, field, parser,extnRegistry, featureMap);
+//			if(field==null){
+//			    //throw new ParseException("Field cannot be null, processing fieldName "+fieldName);
+//			}
+      parser.nextToken();
+      if (field != null) {
+        setFields(builder, field, parser, extnRegistry, featureMap);
+      } else {
+        // if the field is null and we want to ignore the fields that we dont understand then skip the data
+        JsonToken token = parser.getCurrentToken();
+        if (JsonToken.START_ARRAY == token || JsonToken.START_OBJECT == token) {
+          parser.skipChildren();
+        }
+      }
 		}
 		return builder;
 	}
