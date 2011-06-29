@@ -121,7 +121,7 @@ public abstract class AbstractCodec implements Codec {
 	@Override
 	public void setFeature(Feature feature, Object value) {
 		if(Feature.SUPPORT_UNKNOWN_FIELDS.equals(feature)){
-			if(Boolean.TRUE.equals(feature)||Boolean.FALSE.equals(value)){
+			if(Boolean.TRUE.equals(value)||Boolean.FALSE.equals(value)){
 				featureMap.put(feature, value);
 			}else{
 				throw new IllegalArgumentException(String.format("Feature [%s] does not support [%s] value",feature,value));
